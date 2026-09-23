@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# zed-pdf — open a PDF inside Zed as a scrollable Markdown preview.
+#
+# Zed has no PDF viewer and its extension API cannot add one, but its Markdown
+# preview does render local images. So: rasterize every page to PNG, emit a
+# Markdown file that stacks them, and open that in Zed.
+set -euo pipefail
+
+VERSION=1.0.0
+CACHE="${ZED_PDF_CACHE:-$HOME/.cache/zed-pdf}"
+dpi="${ZED_PDF_DPI:-144}"
+pdf=""
+
+usage() {
+  cat <<'USAGE'
+zed-pdf — read PDFs inside Zed
+
+usage:
+  zed-pdf <file.pdf> [--dpi N]   render and open in Zed
+  zed-pdf --clean                delete the whole render cache
+  zed-pdf --help                 this message
+
+options:
+  --dpi N        rasterization DPI (default 144, or $ZED_PDF_DPI)
+
+environment:
+  ZED_PDF_DPI    default DPI
+  ZED_PDF_CACHE  cache directory (default ~/.cache/zed-pdf)
+
+Once the tab opens, press cmd-shift-v to switch to the rendered preview.
+USAGE
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -h|--help)    usage; exit 0 ;;
+    --version)    echo "zed-pdf $VERSION"; exit 0 ;;
+    --clean)      rm -rf "$CACHE"; echo "zed-pdf: cleared $CACHE"; exit 0 ;;
+    --dpi)        [ $# -ge 2 ] || { echo "zed-pdf: --dpi needs a value" >&2; exit 2; }
+                  dpi="$2"; shift 2 ;;
+    --dpi=*)      dpi="${1#*=}"; shift ;;
+    -*)           echo "zed-pdf: unknown option: $1" >&2; usage >&2; exit 2 ;;
+    *)            pdf="$1"; shift ;;
+  esac
+done
+
+[ -n "$pdf" ] || { usage >&2; exit 2; }
+[ -f "$pdf" ] || { echo "zed-pdf: no such file: $pdf" >&2; exit 1; }
+command -v pdftoppm >/dev/null || { echo "zed-pdf: pdftoppm not found — brew install poppler" >&2; exit 1; }
+command -v zed      >/dev/null || { echo "zed-pdf: the 'zed' CLI is not on PATH" >&2; exit 1; }
+
+pdf="$(cd "$(dirname "$pdf")" && pwd)/$(basename "$pdf")"
+stem="$(basename "${pdf%.*}")"
+key="$(printf '%s' "$pdf" | shasum -a 256 | cut -c1-12)"
+out="$CACHE/$key"
+sig="$(stat -f %m "$pdf")-$dpi"
+
+# Re-render only when the source mtime or the DPI changed.
+if [ ! -f "$out/.stamp" ] || [ "$(cat "$out/.stamp")" != "$sig" ]; then
+  rm -rf "$out"; mkdir -p "$out"
+  echo "zed-pdf: rendering '$stem' at ${dpi}dpi ..." >&2
+  pdftoppm -png -r "$dpi" "$pdf" "$out/page"
+  pages="$(find "$out" -name 'page-*.png' | wc -l | tr -d ' ')"
+  {
+    printf '# %s\n\n' "$stem"
+    printf '`%s` · %s pages · %s dpi · [open in the system viewer](file://%s)\n\n---\n\n' \
+      "$pdf" "$pages" "$dpi" "$pdf"
+    n=0
+    for p in "$out"/page-*.png; do
+      n=$((n + 1))
+      # NOTE: the link must stay RELATIVE. Zed resolves a leading "/" against
+      # the workspace root, not the filesystem root, so absolute paths fail.
+      printf '![p%s](%s)\n\n*p. %s*\n\n' "$n" "$(basename "$p")" "$n"
+    done
+  } > "$out/$stem.md"
+  printf '%s' "$sig" > "$out/.stamp"
+fi
+
+exec zed "$out/$stem.md"

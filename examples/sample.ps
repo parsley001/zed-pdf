@@ -1,0 +1,121 @@
+%!PS-Adobe-3.0
+<< /PageSize [595 842] >> setpagedevice
+
+/H { /Helvetica-Bold findfont exch scalefont setfont } def
+/R { /Helvetica findfont exch scalefont setfont } def
+/M { /Courier findfont exch scalefont setfont } def
+/T { 3 1 roll moveto show } def
+/N { 12 string cvs } def
+/box { /bh exch def /bw exch def /by exch def /bx exch def
+       newpath bx by moveto bw 0 rlineto 0 bh rlineto bw neg 0 rlineto closepath } def
+/rule { newpath 60 exch moveto 475 0 rlineto 0.8 setlinewidth stroke } def
+/foot { 0.5 0.5 0.5 setrgbcolor 9 M 60 80 3 -1 roll T } def
+
+% ---------- page 1 ----------
+0.12 0.45 0.85 setrgbcolor  60 700 475 60 box fill
+1 1 1 setrgbcolor 26 H  80 722 (zed-pdf test document) T
+0.2 0.2 0.2 setrgbcolor
+13 R 60 660 (A 5-page sample PDF for checking the Zed markdown-preview viewer.) T
+11 R 60 638 (Generated with Ghostscript. No external assets, no embedded images.) T
+0.6 0.6 0.6 setrgbcolor 615 rule
+0.2 0.2 0.2 setrgbcolor
+13 H 60 580 (What each page checks) T
+11 R
+60 552 (p.2   Color fidelity - flat fills, a gradient, hairline strokes) T
+60 532 (p.3   Text legibility - a 6pt to 24pt size ladder) T
+60 512 (p.4   Vector graphics - a bar chart with axes and labels) T
+60 492 (p.5   Dense layout - a 12-row table with hairline rules) T
+(page 1 of 5) foot
+showpage
+
+% ---------- page 2 ----------
+0.2 0.2 0.2 setrgbcolor 20 H 60 770 (2. Color fidelity) T
+0.6 0.6 0.6 setrgbcolor 755 rule
+/ci 0 def
+[[0.91 0.30 0.24][0.95 0.61 0.07][0.18 0.80 0.44][0.20 0.60 0.86][0.61 0.35 0.71][0.20 0.29 0.37]]
+{ aload pop setrgbcolor  60 ci 80 mul add 620 68 100 box fill  /ci ci 1 add def } forall
+0.35 0.35 0.35 setrgbcolor 10 R 60 600 (flat fills) T
+0 1 254 { /g exch def  g 254 div 0.35 1 g 254 div sub setrgbcolor
+          60 g 1.87 mul add 500 2.4 70 box fill } for
+0.35 0.35 0.35 setrgbcolor 10 R 60 480 (gradient - look for banding) T
+/ly 440 def
+[0.25 0.5 0.75 1.0 1.5 2.0] { /lw exch def
+  0 0 0 setrgbcolor newpath 60 ly moveto 475 0 rlineto lw setlinewidth stroke
+  0.45 0.45 0.45 setrgbcolor 8 M 545 ly 3 sub lw N T
+  /ly ly 22 sub def } forall
+0.35 0.35 0.35 setrgbcolor 10 R 60 280 (hairlines 0.25pt to 2.0pt - the thin ones vanish at low DPI) T
+(page 2 of 5) foot
+showpage
+
+% ---------- page 3 ----------
+0.2 0.2 0.2 setrgbcolor 20 H 60 770 (3. Text legibility ladder) T
+0.6 0.6 0.6 setrgbcolor 755 rule
+/ty 700 def
+[18 16 14 12 11 10 9 8 7 6] { /s exch def
+  0.55 0.55 0.55 setrgbcolor 9 M 60 ty s N T
+  0.15 0.15 0.15 setrgbcolor s R 100 ty (The quick brown fox jumps over the lazy dog 0123456789) T
+  /ty ty s 2.6 mul 8 add sub def } forall
+0.4 0.4 0.4 setrgbcolor 10 R 60 300 (At 144dpi the 6-7pt rows should still be readable. If not, rerun with --dpi 220.) T
+(page 3 of 5) foot
+showpage
+
+% ---------- page 4 ----------
+0.2 0.2 0.2 setrgbcolor 20 H 60 770 (4. Vector chart) T
+0.6 0.6 0.6 setrgbcolor 755 rule
+/vals [320 180 400 255 140 370 210] def
+/labs [(Mon)(Tue)(Wed)(Thu)(Fri)(Sat)(Sun)] def
+0.85 0.85 0.85 setrgbcolor 0.4 setlinewidth
+100 100 400 { /gy exch def newpath 90 250 gy add moveto 420 0 rlineto stroke } for
+0.3 0.3 0.3 setrgbcolor 1 setlinewidth
+newpath 90 250 moveto 0 420 rlineto stroke
+newpath 90 250 moveto 420 0 rlineto stroke
+0 1 6 { /k exch def
+  0.20 0.60 0.86 setrgbcolor
+  90 k 58 mul add 14 add 250 36 vals k get box fill
+  0.25 0.25 0.25 setrgbcolor 9 R
+  90 k 58 mul add 18 add 232 labs k get T
+  0.35 0.35 0.35 setrgbcolor 8 M
+  90 k 58 mul add 18 add 250 vals k get add 6 add vals k get N T } for
+(page 4 of 5) foot
+showpage
+
+% ---------- page 5 ----------
+0.2 0.2 0.2 setrgbcolor 20 H 60 770 (5. Dense table) T
+0.6 0.6 0.6 setrgbcolor 755 rule
+0.12 0.45 0.85 setrgbcolor 60 713 475 24 box fill
+1 1 1 setrgbcolor 10 H
+70 722 (id) T  120 722 (component) T  265 722 (status) T  365 722 (latency) T  450 722 (owner) T
+/rows [
+ [(01)(auth-gateway)(healthy)(12ms)(platform)]
+ [(02)(session-store)(healthy)(4ms)(platform)]
+ [(03)(render-worker)(degraded)(188ms)(media)]
+ [(04)(thumbnailer)(healthy)(31ms)(media)]
+ [(05)(search-index)(healthy)(9ms)(discovery)]
+ [(06)(recommender)(degraded)(240ms)(discovery)]
+ [(07)(billing-sync)(healthy)(17ms)(payments)]
+ [(08)(webhook-relay)(down)(-)(payments)]
+ [(09)(audit-log)(healthy)(6ms)(security)]
+ [(10)(key-rotation)(healthy)(22ms)(security)]
+ [(11)(mail-queue)(healthy)(45ms)(comms)]
+ [(12)(push-fanout)(degraded)(310ms)(comms)]
+] def
+/ry 693 def
+0 1 11 { /k exch def /row rows k get def
+  k 2 mod 0 eq { 0.955 0.96 0.975 setrgbcolor 60 ry 6 sub 475 20 box fill } if
+  0.2 0.2 0.2 setrgbcolor 9.5 R
+  70 ry row 0 get T
+  120 ry row 1 get T
+  row 2 get (healthy) eq
+    { 0.16 0.62 0.33 setrgbcolor }
+    { row 2 get (down) eq { 0.83 0.18 0.18 setrgbcolor } { 0.85 0.55 0.08 setrgbcolor } ifelse }
+  ifelse
+  9.5 H 265 ry row 2 get T
+  0.2 0.2 0.2 setrgbcolor 9 M 365 ry row 3 get T
+  9.5 R 450 ry row 4 get T
+  0.82 0.82 0.82 setrgbcolor 0.3 setlinewidth
+  newpath 60 ry 9 sub moveto 475 0 rlineto stroke
+  /ry ry 20 sub def } for
+0.4 0.4 0.4 setrgbcolor 11 R 60 400 (End of test document. If all five pages rendered, zed-pdf is working.) T
+(page 5 of 5) foot
+showpage
+%%EOF
